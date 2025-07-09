@@ -36,6 +36,7 @@ export default function CreateDropPage() {
       },
       body: JSON.stringify({
         giftcard_id: data.giftCard.value,
+        giftcard_name: data.giftCard.label,
         amount: data.amount,
         quantity: data.quantity,
         deadline: data.deadline.toISOString(),

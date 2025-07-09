@@ -4,8 +4,15 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
   console.log('Creating drop...');
   const body = await req.json();
-  const { giftcard_id, amount, quantity, deadline, criteria, created_by } =
-    body;
+  const {
+    giftcard_id,
+    giftcard_name,
+    amount,
+    quantity,
+    deadline,
+    criteria,
+    created_by,
+  } = body;
 
   const supabase = await createClient();
 
@@ -18,6 +25,7 @@ export async function POST(req: NextRequest) {
       deadline,
       criteria,
       created_by,
+      giftcard_name,
       created_at: new Date().toISOString(),
     })
     .select()
