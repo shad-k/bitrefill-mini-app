@@ -1,9 +1,11 @@
 'use client';
+import { NeynarCastCard, useNeynarContext } from '@neynar/react';
 import { useEffect, useState } from 'react';
 
 export function DropStatus({ drop }: { drop: any }) {
-  const [composed, setComposed] = useState(false);
+  const [castHash, setCastHash] = useState(false);
   const [product, setProduct] = useState<any>(null);
+  const { user } = useNeynarContext();
 
   useEffect(() => {
     async function fetchProduct() {
@@ -17,17 +19,18 @@ export function DropStatus({ drop }: { drop: any }) {
   }, [drop.giftcard_id]);
 
   const composeCast = async () => {
-    const res = await fetch('/api/farcaster/compose-cast', {
+    const res = await fetch('/api/farcaster/cast/compose', {
       method: 'POST',
       body: JSON.stringify({
         dropId: drop.id,
         text: `🎁 ${drop.quantity} x $${drop.amount} ${
-          drop.giftcard_id
+          product.name
         } drop is live! Deadline: ${new Date(drop.deadline).toLocaleString()}`,
+        signerUuid: user?.signer_uuid,
       }),
     });
-    await res.json();
-    setComposed(true);
+    const { hash } = await res.json();
+    setCastHash(hash);
   };
 
   return (
@@ -48,12 +51,16 @@ export function DropStatus({ drop }: { drop: any }) {
           Post Cast
         </button>
       )}
-      {/* {drop.cast_hash && (
+      {(!!drop.cast_hash || !!castHash) && (
         <div className="mt-4">
           <h3 className="text-sm font-semibold">Cast Posted:</h3>
-          <neynar-cast-view castHash={drop.cast_hash} />
+          <NeynarCastCard
+            type="hash"
+            identifier={drop.cast_hash || castHash}
+            renderEmbeds={true}
+          />
         </div>
-      )} */}
+      )}
     </div>
   );
 }

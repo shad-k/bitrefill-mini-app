@@ -11,8 +11,10 @@ import { GiftCardSelector } from '@/app/create/components/GiftCardSelector';
 import { DropFormFields } from '@/app/create/components/DropFormFields';
 import { SubmitButton } from '@/app/create/components/SubmitButton';
 import { useRouter } from 'next/navigation';
+import { useNeynarContext } from '@neynar/react';
 
 export default function CreateDropPage() {
+  const { user } = useNeynarContext();
   const router = useRouter();
   const methods = useForm<CreateDropFormValues>({
     resolver: yupResolver(createDropSchema),
@@ -38,7 +40,7 @@ export default function CreateDropPage() {
         quantity: data.quantity,
         deadline: data.deadline.toISOString(),
         criteria: data.criteria,
-        created_by: 'user-id-placeholder', // Replace with actual user ID
+        created_by: user?.fid, // Replace with actual user ID
       }),
     });
     const drop = await res.json();

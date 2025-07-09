@@ -6,6 +6,8 @@
   "private": true,
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
+    "@neynar/nodejs-sdk": "^3.22.0",
+    "@neynar/react": "^1.2.5",
     "@supabase/ssr": "^0.6.1",
     "@tailwindcss/postcss": "^4.1.11",
     "next": "~15.2.4",

@@ -1,8 +1,24 @@
-'use client'
-import { useFormContext } from 'react-hook-form'
+'use client';
+import { useNeynarContext } from '@neynar/react';
+import { useFormContext } from 'react-hook-form';
 
 export function SubmitButton() {
-  const { formState: { isSubmitting } } = useFormContext()
+  const {
+    formState: { isSubmitting },
+  } = useFormContext();
+  const { isAuthenticated } = useNeynarContext();
+
+  if (!isAuthenticated) {
+    return (
+      <button
+        type="button"
+        disabled
+        className="bg-gray-400 text-white px-5 py-2 rounded-md cursor-not-allowed"
+      >
+        Please sign in to create a drop
+      </button>
+    );
+  }
 
   return (
     <button
@@ -12,5 +28,5 @@ export function SubmitButton() {
     >
       {isSubmitting ? 'Creating...' : 'Create Drop'}
     </button>
-  )
+  );
 }
