@@ -1,31 +1,27 @@
+import { createClient } from '@/utils/supabase';
 import { NextRequest, NextResponse } from 'next/server';
 
-const BITREFILL_API_URL = 'https://www.bitrefill.com/api/products/search';
-const BITREFILL_API_KEY = process.env.BITREFILL_API_KEY!;
-
 export async function GET(req: NextRequest) {
+  const supabase = await createClient();
   const { searchParams } = new URL(req.url);
-  const query = searchParams.get('q');
+  const q = searchParams.get('q');
 
-  if (!query) {
-    return NextResponse.json({ error: 'Missing search query' }, { status: 400 });
+  let query = supabase
+    .from('giftcards')
+    .select(
+      'id, name, country_name, country_code, currency, image_url, in_stock'
+    )
+    .order('name');
+
+  if (q) {
+    query = query.or(`name.ilike.%${q}%`);
   }
 
-  try {
-    const apiRes = await fetch(`${BITREFILL_API_URL}?q=${encodeURIComponent(query)}`, {
-      headers: {
-        'Authorization': `Bearer ${BITREFILL_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-    });
+  const { data, error } = await query;
 
-    if (!apiRes.ok) {
-      return NextResponse.json({ error: 'Failed to fetch from Bitrefill' }, { status: apiRes.status });
-    }
-
-    const data = await apiRes.json();
-    return NextResponse.json(data);
-  } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  return NextResponse.json(data);
 }
