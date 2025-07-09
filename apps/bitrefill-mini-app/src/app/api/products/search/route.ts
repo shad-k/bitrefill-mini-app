@@ -6,12 +6,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get('q');
 
-  let query = supabase
-    .from('giftcards')
-    .select(
-      'id, name, country_name, country_code, currency, image_url, in_stock'
-    )
-    .order('name');
+  let query = supabase.from('giftcards').select().order('name');
 
   if (q) {
     query = query.or(`name.ilike.%${q}%`);

@@ -1,14 +1,19 @@
-'use client'
+'use client';
 
-import { useForm, FormProvider } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { createDropSchema } from '@/app/create/config/schema'
-import { EligibilityCriteria, type CreateDropFormValues } from '@/app/create/config/types'
-import { GiftCardSelector } from '@/app/create/components/GiftCardSelector'
-import { DropFormFields } from '@/app/create/components/DropFormFields'
-import { SubmitButton } from '@/app/create/components/SubmitButton'
+import { useForm, FormProvider } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { createDropSchema } from '@/app/create/config/schema';
+import {
+  EligibilityCriteria,
+  type CreateDropFormValues,
+} from '@/app/create/config/types';
+import { GiftCardSelector } from '@/app/create/components/GiftCardSelector';
+import { DropFormFields } from '@/app/create/components/DropFormFields';
+import { SubmitButton } from '@/app/create/components/SubmitButton';
+import { useRouter } from 'next/navigation';
 
 export default function CreateDropPage() {
+  const router = useRouter();
   const methods = useForm<CreateDropFormValues>({
     resolver: yupResolver(createDropSchema),
     defaultValues: {
@@ -18,11 +23,30 @@ export default function CreateDropPage() {
       deadline: new Date(),
       criteria: EligibilityCriteria.REACTION,
     },
-  })
+  });
 
-  const onSubmit = (data: CreateDropFormValues) => {
-    console.log('Create Drop:', data)
-  }
+  const onSubmit = async (data: CreateDropFormValues) => {
+    console.log('Create Drop:', data);
+    const res = await fetch('/api/drop/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        giftcard_id: data.giftCard.value,
+        amount: data.amount,
+        quantity: data.quantity,
+        deadline: data.deadline.toISOString(),
+        criteria: data.criteria,
+        created_by: 'user-id-placeholder', // Replace with actual user ID
+      }),
+    });
+    const drop = await res.json();
+    console.log('Drop created:', drop);
+    if (drop.dropId) {
+      router.push(`/drop/${drop.dropId}`);
+    }
+  };
 
   return (
     <main className="max-w-2xl mx-auto p-6">
@@ -35,5 +59,5 @@ export default function CreateDropPage() {
         </form>
       </FormProvider>
     </main>
-  )
+  );
 }
