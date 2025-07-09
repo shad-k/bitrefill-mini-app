@@ -5,6 +5,9 @@
   "references": [
     {
       "path": "./apps/bitrefill-mini-app"
+    },
+    {
+      "path": "./apps/sync-products"
     }
   ]
 }
