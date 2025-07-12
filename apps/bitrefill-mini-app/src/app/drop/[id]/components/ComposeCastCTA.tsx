@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { DropData } from '../type';
-import { useNeynarContext } from '@neynar/react';
 import { sdk } from '@farcaster/miniapp-sdk';
 
 interface Props {
@@ -8,9 +7,9 @@ interface Props {
 }
 const ComposeCastCTA: React.FC<Props> = ({ drop }) => {
   const [composingCast, setComposingCast] = useState(false);
-  const { user } = useNeynarContext();
 
   const composeCast = async () => {
+    setComposingCast(true);
     const result = await sdk.actions.composeCast({
       text: `🎁 ${drop.quantity} lucky winner${
         drop.quantity > 1 ? 's' : ''
@@ -33,6 +32,7 @@ const ComposeCastCTA: React.FC<Props> = ({ drop }) => {
         }),
       });
     }
+    setComposingCast(false);
   };
 
   return (

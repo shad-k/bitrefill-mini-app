@@ -63,7 +63,7 @@ export function GiftCardSelector() {
               value: item.id,
             }));
             resolve(options);
-          } catch (error) {
+          } catch {
             resolve([]);
           }
         }, 300); // 300ms debounce
