@@ -13,6 +13,7 @@ export async function GET(
     .select()
     .eq('id', id)
     .single();
+  console.log({ drop });
 
   if (error)
     return NextResponse.json({ error: error.message }, { status: 500 });

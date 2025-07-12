@@ -12,9 +12,11 @@
     "@tailwindcss/postcss": "^4.1.11",
     "next": "~15.2.4",
     "react": "19.0.0",
+    "react-confetti": "^6.4.0",
     "react-datepicker": "^8.4.0",
     "react-dom": "19.0.0",
     "react-hook-form": "^7.60.0",
+    "react-hot-toast": "^2.5.2",
     "react-select": "^5.10.1",
     "yup": "^1.6.1"
   },

@@ -1,19 +1,24 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { DropStatus } from './components/DropStatus';
 import { useParams } from 'next/navigation';
 import { ParamValue } from 'next/dist/server/request/params';
-import {
-  NeynarAuthButton,
-  SIWN_variant,
-  useNeynarContext,
-} from '@neynar/react';
-import DropCard from './components/DropCard';
+import { useNeynarContext } from '@neynar/react';
+import { DropData } from './type';
+import DropInfoCard from './components/DropInfoCard';
+import CastPreview from './components/CastPreview';
+import CreatorActions from './components/CreatorActions';
+import VisitorActions from './components/VisitorActions';
+import { WinnerList } from './components/WinnerList';
+import { RevealCardButton } from './components/RevealCardButton';
+import DropPageSignInCTA from './components/DropPageSignInCTA';
 
 export default function DropPage() {
   const { id } = useParams();
-  const [drop, setDrop] = useState<any>(null);
+  const [drop, setDrop] = useState<DropData | null>(null);
   const { user, isAuthenticated } = useNeynarContext();
+  const [isLoading, setIsLoading] = useState(true);
+  const isCreator = drop && user && user?.fid === parseInt(drop.created_by);
+  const deadlinePassed = drop ? new Date(drop.deadline) < new Date() : false;
 
   const fetchDrop = async (id: ParamValue) => {
     const res = await fetch(`/api/drop/${id}`);
@@ -25,6 +30,7 @@ export default function DropPage() {
   useEffect(() => {
     (async () => {
       await fetchDrop(id);
+      setIsLoading(false);
     })();
     const interval = setInterval(async () => {
       const data = await fetchDrop(id);
@@ -35,30 +41,46 @@ export default function DropPage() {
     return () => clearInterval(interval);
   }, [id]);
 
-  if (!isAuthenticated) {
+  if (isLoading || !drop) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <NeynarAuthButton
-          className="rounded-full flex items-center "
-          label="Sign In"
-          variant={SIWN_variant.FARCASTER}
-        />
+      <div className="max-w-xl mx-auto p-4 animate-pulse space-y-4">
+        <div className="h-6 bg-gray-300 rounded w-1/3" />
+        <div className="h-20 bg-gray-200 rounded" />
+        <div className="h-16 bg-gray-200 rounded" />
+        <div className="h-12 bg-gray-100 rounded" />
       </div>
     );
   }
 
-  if (!drop) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
-        <p className="ml-4 text-lg">Loading Drop...</p>
-      </div>
-    );
-  }
-  console.log({ user, drop });
-  if (parseInt(drop.created_by) === user?.fid) {
-    return <DropStatus drop={drop} />;
-  }
+  return (
+    <div className="max-w-xl mx-auto p-4 space-y-6">
+      <h1 className="text-2xl font-bold">🎁 Drop Details</h1>
 
-  return <DropCard drop={drop} />;
+      <DropInfoCard
+        name={drop.giftcard_name}
+        amount={drop.amount}
+        quantity={drop.quantity}
+        deadline={drop.deadline}
+      />
+
+      {!isAuthenticated && <DropPageSignInCTA />}
+
+      <CastPreview castHash={drop.cast_hash} />
+
+      {deadlinePassed && isAuthenticated && (
+        <>
+          <WinnerList dropId={drop.id} />
+          <RevealCardButton dropId={drop.id} currentUserFid={user?.fid} />
+        </>
+      )}
+
+      {!deadlinePassed &&
+        isAuthenticated &&
+        (isCreator ? (
+          <CreatorActions drop={drop} />
+        ) : (
+          <VisitorActions dropId={drop.id} />
+        ))}
+    </div>
+  );
 }

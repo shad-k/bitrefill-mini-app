@@ -63,9 +63,9 @@ export async function POST(req: NextRequest) {
     );
   });
 
-  const { data: invoice } = await invoiceRes.json();
+  const { data: invoice, meta } = await invoiceRes.json();
 
-  console.log('Updating drop with invoice details...', invoice);
+  console.log('Updating drop with invoice details...', invoice, meta);
   await supabase
     .from('drops')
     .update({
