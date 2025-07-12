@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { DropData } from '../type';
 import { useNeynarContext } from '@neynar/react';
+import { sdk } from '@farcaster/miniapp-sdk';
 
 interface Props {
   drop: DropData;
@@ -10,23 +11,28 @@ const ComposeCastCTA: React.FC<Props> = ({ drop }) => {
   const { user } = useNeynarContext();
 
   const composeCast = async () => {
-    setComposingCast(true);
-    await fetch('/api/farcaster/cast/compose', {
-      method: 'POST',
-      body: JSON.stringify({
-        dropId: drop.id,
-        text: `🎁 ${drop.quantity} x $${drop.amount} ${
-          drop.giftcard_name
-        } drop is live! Deadline: ${new Date(drop.deadline).toLocaleString()}
-        
-        ${
-          drop.criteria === 'reaction'
-            ? 'React to this post to have a chance at winning a gift card!'
-            : 'Reply to have a chance at winning a gift card!'
-        }`,
-        signerUuid: user?.signer_uuid,
-      }),
+    const result = await sdk.actions.composeCast({
+      text: `🎁 ${drop.quantity} lucky winner${
+        drop.quantity > 1 ? 's' : ''
+      } will win $${drop.amount} ${drop.giftcard_name}.
+      Drop is live! Deadline: ${new Date(drop.deadline).toLocaleString()}
+      ${
+        drop.criteria === 'reaction'
+          ? 'React to this post to have a chance at winning a gift card!'
+          : 'Reply to have a chance at winning'
+      }`,
+      embeds: [`https://${process.env.NEXT_PUBLIC_APP_URL}/drop/${drop.id}`],
     });
+
+    if (result?.cast) {
+      await sdk.quickAuth.fetch('/api/drop/update-with-cast', {
+        method: 'POST',
+        body: JSON.stringify({
+          hash: result.cast.hash,
+          dropId: drop.id,
+        }),
+      });
+    }
   };
 
   return (

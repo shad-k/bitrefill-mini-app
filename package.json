@@ -5,6 +5,7 @@
   "scripts": {},
   "private": true,
   "dependencies": {
+    "@farcaster/quick-auth": "^0.0.7",
     "@hookform/resolvers": "^5.1.1",
     "@neynar/nodejs-sdk": "^3.22.0",
     "@neynar/react": "^1.2.5",

@@ -27,6 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://auth.farcaster.xyz" />
+      </head>
       <body
         className={`${inter.variable} ${ibmPlexSans.variable} antialiased bg-gray-50 text-gray-800`}
       >

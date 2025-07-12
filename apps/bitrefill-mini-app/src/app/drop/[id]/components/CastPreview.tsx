@@ -1,14 +1,25 @@
 'use client';
 
 import { NeynarCastCard, useNeynarContext } from '@neynar/react';
+import { sdk } from '@farcaster/miniapp-sdk';
 
 const CastPreview = ({ castHash }: { castHash: string | null }) => {
   const { user } = useNeynarContext();
   if (!castHash) {
     return null;
   }
+
+  const handleCastClick = () => {
+    sdk.actions.viewCast({
+      hash: castHash,
+    });
+  };
+
   return (
-    <div className="border border-gray-200 p-3 rounded-lg shadow">
+    <button
+      className="border border-gray-200 p-3 rounded-lg shadow"
+      onClick={handleCastClick}
+    >
       <NeynarCastCard
         type="hash"
         identifier={castHash}
@@ -20,7 +31,7 @@ const CastPreview = ({ castHash }: { castHash: string | null }) => {
           return Promise.resolve(localFrame);
         }}
       />
-    </div>
+    </button>
   );
 };
 
