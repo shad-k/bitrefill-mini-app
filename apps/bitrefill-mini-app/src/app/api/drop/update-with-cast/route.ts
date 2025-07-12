@@ -20,14 +20,13 @@ export async function POST(req: NextRequest) {
   try {
     await farcasterClient.verifyJwt({
       token: authHeader.split(' ')[1] as string,
-      domain: process.env.NEXT_PUBLIC_APP_URL || '',
+      domain: process.env.APP_URL || '',
     });
 
     const body = await req.json();
-    const { dropId, castHash } = body;
-    console.log({ dropId, castHash });
+    const { dropId, hash } = body;
 
-    if (!dropId || !castHash) {
+    if (!dropId || !hash) {
       return NextResponse.json(
         { error: 'Missing dropId or castHash' },
         { status: 400 }
@@ -36,7 +35,7 @@ export async function POST(req: NextRequest) {
 
     const { error } = await supabase
       .from('drops')
-      .update({ cast_hash: castHash })
+      .update({ cast_hash: hash })
       .eq('id', dropId);
 
     if (error) {

@@ -20,7 +20,7 @@ const ComposeCastCTA: React.FC<Props> = ({ drop }) => {
           ? 'React to this post to have a chance at winning a gift card!'
           : 'Reply to have a chance at winning'
       }`,
-      embeds: [`https://${process.env.NEXT_PUBLIC_APP_URL}/drop/${drop.id}`],
+      embeds: [`${process.env.NEXT_PUBLIC_APP_URL}/drop/${drop.id}`],
     });
 
     if (result?.cast) {
