@@ -1,3 +1,4 @@
+import { inngest } from '@/utils/inngest';
 import { createClient } from '@/utils/supabase';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -89,5 +90,13 @@ export async function POST(req: NextRequest) {
     })
     .eq('id', drop.id);
   console.log('Drop updated with invoice details');
+
+  await inngest.send({
+    name: 'drop/reveal.winners',
+    data: {
+      dateTime: deadline,
+      dropId: drop.id,
+    },
+  });
   return NextResponse.json({ dropId: drop.id });
 }

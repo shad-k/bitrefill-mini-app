@@ -27,8 +27,6 @@ export function DropFormFields() {
   useEffect(() => {
     resetField('amount');
     resetField('quantity');
-    resetField('deadline');
-    resetField('criteria');
     const packages = JSON.parse(selectedGiftCard.packages ?? null);
 
     const hasPackages = Array.isArray(packages) && packages.length > 0;
@@ -171,7 +169,7 @@ export function DropFormFields() {
               dateFormat="dd-MM-YYYY h:mm aa"
               className="w-full border border-gray-300 rounded-md px-3 py-2"
               placeholderText="Select a deadline"
-              showTimeSelect={true}
+              showTimeInput={true}
             />
           )}
         />
@@ -187,8 +185,22 @@ export function DropFormFields() {
           className="w-full border border-gray-300 rounded-md px-3 py-2"
         >
           <option value="reaction">Reaction</option>
-          <option value="reply">Reply</option>
+          <option value="reply" disabled>
+            Reply (Coming Soon)
+          </option>
         </select>
+      </div>
+      <div className="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 p-4 rounded-md mb-4">
+        <p className="font-semibold">💳 Note:</p>
+        <p>
+          Payment for gift cards is currently processed using the Bitrefill
+          account balance. Please ensure you have sufficient account balance
+          <br />
+          🪙{' '}
+          <strong>
+            On-chain payments (via crypto wallets) are coming soon!
+          </strong>
+        </p>
       </div>
     </>
   );

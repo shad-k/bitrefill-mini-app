@@ -15,7 +15,6 @@ export async function GET(
     )
     .eq('id', id)
     .single();
-  console.log({ drop });
 
   if (error)
     return NextResponse.json({ error: error.message }, { status: 500 });
