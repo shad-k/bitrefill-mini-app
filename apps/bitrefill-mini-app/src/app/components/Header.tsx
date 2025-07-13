@@ -14,7 +14,7 @@ const Header = () => {
         label="Sign In"
         variant={SIWN_variant.FARCASTER}
       /> */}
-      <SignInButton className="h-full rounded-full flex items-center " />
+      <SignInButton />
     </header>
   );
 };
