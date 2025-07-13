@@ -14,7 +14,20 @@ export async function GET(
     .eq('id', id)
     .single();
 
-  const winners = drop?.orders?.map((order: any) => order.winner_fid);
+  let winners = drop?.orders
+    ?.map((order: any) => order.winner_fid)
+    .filter((winner: any) => !!winner);
+  if (winners.length === 0) {
+    await fetch(`/api/drop/${id}/reveal-winners`);
+    const { data: drop } = await supabase
+      .from('drops')
+      .select('orders')
+      .eq('id', id)
+      .single();
+    winners = drop?.orders
+      ?.map((order: any) => order.winner_fid)
+      .filter((winner: any) => !!winner);
+  }
 
   return NextResponse.json({ winners }, { status: 200 });
 }

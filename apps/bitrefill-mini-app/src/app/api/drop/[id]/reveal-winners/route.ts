@@ -67,6 +67,11 @@ export async function POST(
       throw new Error(`Error updating drop orders: ${updateError.message}`);
     }
 
+    return NextResponse.json(
+      { message: `Winners declared for drop: ${id}`, winners },
+      { status: 200 }
+    );
+
     neynarClient.publishFrameNotifications({
       targetFids: [...winners.map((w) => parseInt(w))],
       notification: {
@@ -100,5 +105,8 @@ export async function POST(
     //   .then((response) => console.log(response))
     //   .catch((err) => console.error(err));
   }
-  return NextResponse.json({ message: `Winners declared for drop: ${id}` });
+  return NextResponse.json(
+    { message: `Winners declared for drop: ${id}` },
+    { status: 200 }
+  );
 }

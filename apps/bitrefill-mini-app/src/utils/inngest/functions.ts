@@ -16,7 +16,6 @@ export const callRevealWinners = inngest.createFunction(
     const dateTime = event.data.dateTime;
     const dropId = event.data.dropId;
     await step.sleepUntil('deadline', dateTime);
-    console.log({ env: process.env.APP_URL });
     const response = await step.fetch(
       `https://${process.env.APP_URL}/api/drop/${dropId}/reveal-winners`,
       {
