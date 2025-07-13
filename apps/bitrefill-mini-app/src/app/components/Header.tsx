@@ -9,11 +9,6 @@ const Header = () => {
       <Link href="/" className="text-xl font-bold mr-auto">
         Bitrefill Drop
       </Link>
-      {/* <NeynarAuthButton
-        
-        label="Sign In"
-        variant={SIWN_variant.FARCASTER}
-      /> */}
       <SignInButton />
     </header>
   );

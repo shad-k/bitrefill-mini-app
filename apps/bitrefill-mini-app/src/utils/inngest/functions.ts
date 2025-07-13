@@ -20,6 +20,7 @@ export const callRevealWinners = inngest.createFunction(
       `https://${process.env.APP_URL}/api/drop/${dropId}/reveal-winners`,
       {
         method: 'POST',
+        body: JSON.stringify({}),
       }
     );
 
