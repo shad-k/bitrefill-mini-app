@@ -41,7 +41,7 @@ export default function CreateDropPage() {
         quantity: data.quantity,
         deadline: data.deadline.toISOString(),
         criteria: data.criteria,
-        created_by: user?.fid, // Replace with actual user ID
+        created_by: user?.fid,
       }),
     });
     const drop = await res.json();

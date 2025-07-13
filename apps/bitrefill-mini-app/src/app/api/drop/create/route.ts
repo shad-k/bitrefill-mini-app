@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     .from('drops')
     .insert({
       giftcard_id,
-      amount: package_id ? null : amount,
+      amount: package_id && package_id !== '' ? null : amount,
       package_id: package_id ?? null,
       quantity,
       deadline,
@@ -80,8 +80,12 @@ export async function POST(req: NextRequest) {
     .update({
       invoice_id: invoice.id,
       invoice_status: invoice.status,
-      order_id: invoice?.orders?.[0]?.id ?? null,
-      order_href: invoice?.orders?.[0]?._href ?? null,
+      orders:
+        invoice?.orders?.map((order: any) => ({
+          id: order.id,
+          href: order._href,
+          status: order.status ?? 'created',
+        })) ?? [],
     })
     .eq('id', drop.id);
   console.log('Drop updated with invoice details');

@@ -10,7 +10,9 @@ export async function GET(
   const supabase = await createClient();
   const { data: drop, error } = await supabase
     .from('drops')
-    .select()
+    .select(
+      'amount, cast_hash, created_at, created_by, criteria, drop_ended, giftcard_id, giftcard_name, id, invoice_id, invoice_status, package_id, quantity, deadline'
+    )
     .eq('id', id)
     .single();
   console.log({ drop });

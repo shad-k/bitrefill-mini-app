@@ -81,7 +81,7 @@ export function DropFormFields() {
                 mode === 'range' ? 'bg-blue-600 text-white' : 'bg-white'
               }`}
               onClick={() => {
-                resetField('amount');
+                resetField('package');
                 setMode('range');
               }}
             >

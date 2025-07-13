@@ -12,29 +12,38 @@ export async function POST(req: NextRequest) {
     .select()
     .eq('invoice_id', id)
     .single();
-  if (dropError) {
+
+  if (dropError || !drop) {
     console.error('Error fetching drop:', dropError);
-    return NextResponse.json({ error: dropError.message }, { status: 500 });
+    return NextResponse.json({ error: dropError?.message }, { status: 500 });
   }
 
   console.log('Drop found:', drop);
 
-  const orderId = drop.order_id;
-
-  const orderRes = await fetch(
-    `${process.env.BITREFILL_API_URL}/orders/${orderId}`,
-    {
-      headers: { Authorization: `Bearer ${process.env.BITREFILL_API_KEY}` },
-    }
+  const updatedOrders = await Promise.all(
+    (drop.orders ?? []).map(async (order: any) => {
+      const res = await fetch(
+        `${process.env.BITREFILL_API_URL}/orders/${order.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.BITREFILL_API_KEY}`,
+          },
+        }
+      );
+      const orderRes = await res.json();
+      return {
+        ...order,
+        status: orderRes.data?.status ?? order.status,
+        redemption_info: orderRes.data?.redemption_info ?? null,
+      };
+    })
   );
-  const order = await orderRes.json();
-  console.log('Order details:', order);
 
   await supabase
     .from('drops')
     .update({
       invoice_status: status,
-      redemption_info: order.data.redemption_info,
+      orders: updatedOrders,
     })
     .eq('invoice_id', id);
   console.log('Drop updated with invoice status:', status);
