@@ -1,4 +1,4 @@
-import { NeynarAuthButton, SIWN_variant } from '@neynar/react';
+import { SignInButton } from '@farcaster/auth-kit';
 
 const DropPageSignInCTA = () => {
   return (
@@ -7,11 +7,7 @@ const DropPageSignInCTA = () => {
         Want to join the drop? Login with your Farcaster account!
       </p>
       <div className="flex items-center justify-center">
-        <NeynarAuthButton
-          className="rounded-full flex items-center "
-          label="Sign In"
-          variant={SIWN_variant.FARCASTER}
-        />
+        <SignInButton />
       </div>
     </div>
   );
