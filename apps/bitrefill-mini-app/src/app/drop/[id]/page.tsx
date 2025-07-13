@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { ParamValue } from 'next/dist/server/request/params';
-import { useNeynarContext } from '@neynar/react';
 import { DropData } from './type';
 import DropInfoCard from './components/DropInfoCard';
 import CastPreview from './components/CastPreview';
@@ -10,13 +9,17 @@ import CreatorActions from './components/CreatorActions';
 import VisitorActions from './components/VisitorActions';
 import { WinnerList } from './components/WinnerList';
 import DropPageSignInCTA from './components/DropPageSignInCTA';
+import { useProfile } from '@farcaster/auth-kit';
 
 export default function DropPage() {
   const { id } = useParams();
   const [drop, setDrop] = useState<DropData | null>(null);
-  const { user, isAuthenticated } = useNeynarContext();
+  const {
+    isAuthenticated,
+    profile: { fid },
+  } = useProfile();
   const [isLoading, setIsLoading] = useState(true);
-  const isCreator = drop && user && user?.fid === parseInt(drop.created_by);
+  const isCreator = drop && fid === parseInt(drop.created_by);
   const deadlinePassed = drop ? new Date(drop.deadline) < new Date() : false;
 
   const fetchDrop = async (id: ParamValue) => {

@@ -2,6 +2,7 @@
 import { NeynarAuthButton, SIWN_variant } from '@neynar/react';
 import '@neynar/react/dist/style.css';
 import Link from 'next/link';
+import { SignInButton } from '@farcaster/auth-kit';
 
 const Header = () => {
   return (
@@ -9,11 +10,12 @@ const Header = () => {
       <Link href="/" className="text-xl font-bold mr-auto">
         Bitrefill Drop
       </Link>
-      <NeynarAuthButton
+      {/* <NeynarAuthButton
         className="h-full rounded-full flex items-center "
         label="Sign In"
         variant={SIWN_variant.FARCASTER}
-      />
+      /> */}
+      <SignInButton />
     </header>
   );
 };

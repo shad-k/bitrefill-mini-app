@@ -1,13 +1,14 @@
 'use client';
-
-import { useNeynarContext } from '@neynar/react';
 import { useEffect, useState } from 'react';
 import { RevealCardButton } from './RevealCardButton';
+import { useProfile } from '@farcaster/auth-kit';
 
 export function WinnerList({ dropId }: { dropId: string }) {
   const [winners, setWinners] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useNeynarContext();
+  const {
+    profile: { fid },
+  } = useProfile();
 
   useEffect(() => {
     fetch(`/api/drop/${dropId}/winners`)
@@ -20,21 +21,17 @@ export function WinnerList({ dropId }: { dropId: string }) {
 
   if (loading) return <p className="text-sm text-gray-500">Loading winners…</p>;
 
-  console.log({ winners });
-
   return (
     <div className="border rounded-lg p-4 bg-green-50">
-      {user?.fid && (
+      {fid && (
         <h3 className="text-md font-semibold text-green-800 mb-2">
-          {winners.includes(user.fid)
-            ? 'You have won🏅'
-            : 'Sorry you have not won'}
+          {winners.includes(fid) ? 'You have won🏅' : 'Sorry you have not won'}
         </h3>
       )}
-      {user?.fid && (
+      {fid && (
         <div>
-          {winners.includes(user.fid) && (
-            <RevealCardButton dropId={dropId} currentUserFid={user?.fid} />
+          {winners.includes(fid) && (
+            <RevealCardButton dropId={dropId} currentUserFid={fid} />
           )}
         </div>
       )}

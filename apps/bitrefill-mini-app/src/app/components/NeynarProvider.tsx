@@ -1,26 +1,25 @@
 'use client';
-import { MiniAppProvider, NeynarContextProvider, Theme } from '@neynar/react';
+import { sdk } from '@farcaster/miniapp-sdk';
+import { useEffect } from 'react';
+import '@farcaster/auth-kit/styles.css';
+import { AuthKitProvider } from '@farcaster/auth-kit';
+
+const config = {
+  rpcUrl: 'https://mainnet.optimism.io',
+  siweUri: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+  domain: process.env.NEXT_PUBLIC_APP_URL?.replace('https://', '').replace(
+    '/',
+    ''
+  ),
+};
+
 const NeynarProvider = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <MiniAppProvider>
-      <NeynarContextProvider
-        settings={{
-          clientId: process.env.NEXT_PUBLIC_NEYNAR_CLIENT_ID || '',
-          defaultTheme: Theme.Dark,
-          eventsCallbacks: {
-            onAuthSuccess: () => {
-              console.log('Neynar Auth Success');
-            },
-            onSignout() {
-              console.log('Neynar Signout');
-            },
-          },
-        }}
-      >
-        {children}
-      </NeynarContextProvider>
-    </MiniAppProvider>
-  );
+  useEffect(() => {
+    (async () => {
+      await sdk.actions.ready();
+    })();
+  }, []);
+  return <AuthKitProvider config={config}>{children}</AuthKitProvider>;
 };
 
 export default NeynarProvider;

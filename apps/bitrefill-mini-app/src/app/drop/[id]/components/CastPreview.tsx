@@ -1,10 +1,13 @@
 'use client';
 
-import { NeynarCastCard, useNeynarContext } from '@neynar/react';
+import { NeynarCastCard } from '@neynar/react';
 import { sdk } from '@farcaster/miniapp-sdk';
+import { useProfile } from '@farcaster/auth-kit';
 
 const CastPreview = ({ castHash }: { castHash: string | null }) => {
-  const { user } = useNeynarContext();
+  const {
+    profile: { fid },
+  } = useProfile();
   if (!castHash) {
     return null;
   }
@@ -25,7 +28,7 @@ const CastPreview = ({ castHash }: { castHash: string | null }) => {
         identifier={castHash}
         renderEmbeds={true}
         renderFrames={true}
-        viewerFid={user?.fid}
+        viewerFid={fid}
         onFrameBtnPress={(_, localFrame, setLocalFrame) => {
           setLocalFrame(localFrame);
           return Promise.resolve(localFrame);

@@ -1,12 +1,12 @@
 'use client';
-import { useNeynarContext } from '@neynar/react';
+import { useProfile } from '@farcaster/auth-kit';
 import { useFormContext } from 'react-hook-form';
 
 export function SubmitButton() {
   const {
     formState: { isSubmitting },
   } = useFormContext();
-  const { isAuthenticated } = useNeynarContext();
+  const { isAuthenticated } = useProfile();
 
   if (!isAuthenticated) {
     return (
