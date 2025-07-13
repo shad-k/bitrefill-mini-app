@@ -18,7 +18,10 @@ export async function GET(
     ?.map((order: any) => order.winner_fid)
     .filter((winner: any) => !!winner);
   if (winners.length === 0) {
-    await fetch(`/api/drop/${id}/reveal-winners`);
+    await fetch(
+      `https://${process.env.APP_URL}/api/drop/${id}/reveal-winners`,
+      { method: 'POST' }
+    );
     const { data: drop } = await supabase
       .from('drops')
       .select('orders')
