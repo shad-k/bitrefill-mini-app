@@ -13,7 +13,9 @@ const ComposeCastCTA: React.FC<Props> = ({ drop }) => {
     const result = await sdk.actions.composeCast({
       text: `🎁 ${drop.quantity} lucky winner${
         drop.quantity > 1 ? 's' : ''
-      } will win $${drop.amount} ${drop.giftcard_name}.
+      } will win $${
+        drop.package_id ? drop.package_id.split('<&>')[1] : drop.amount
+      } ${drop.giftcard_name}.
       Drop is live! Deadline: ${new Date(drop.deadline).toLocaleString()}
       ${
         drop.criteria === 'reaction'

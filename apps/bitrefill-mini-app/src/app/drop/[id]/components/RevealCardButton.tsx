@@ -11,22 +11,8 @@ export function RevealCardButton({
   dropId: string;
   currentUserFid?: number;
 }) {
-  const [isWinner, setIsWinner] = useState(false);
   const [code, setCode] = useState<string | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(`/api/drop/${dropId}/winners`)
-      .then((res) => res.json())
-      .then((data) => {
-        const match = data.winners.find(
-          (w: { fid: number }) => w.fid === currentUserFid
-        );
-        setIsWinner(!!match);
-        setLoading(false);
-      });
-  }, [dropId, currentUserFid]);
 
   async function revealCode() {
     const res = await fetch(`/api/drop/${dropId}/reveal`, {
@@ -45,8 +31,6 @@ export function RevealCardButton({
       toast.success('Copied to clipboard!');
     }
   };
-
-  if (loading || !isWinner) return null;
 
   return (
     <div className="border p-4 rounded bg-yellow-50 relative">

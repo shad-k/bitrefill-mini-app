@@ -23,4 +23,5 @@ export type DropData = {
   redemption_info?: RedemptionInfo;
   invoice_status: string;
   criteria: string;
+  package_id?: string;
 };

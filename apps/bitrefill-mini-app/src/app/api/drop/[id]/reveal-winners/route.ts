@@ -52,7 +52,7 @@ export async function POST(
     }
 
     const updates = winners.map((fid, i) => ({
-      id: drop.orders[i].id,
+      ...drop.orders[i],
       winner_fid: fid,
     }));
 

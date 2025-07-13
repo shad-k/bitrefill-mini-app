@@ -9,7 +9,6 @@ import CastPreview from './components/CastPreview';
 import CreatorActions from './components/CreatorActions';
 import VisitorActions from './components/VisitorActions';
 import { WinnerList } from './components/WinnerList';
-import { RevealCardButton } from './components/RevealCardButton';
 import DropPageSignInCTA from './components/DropPageSignInCTA';
 
 export default function DropPage() {
@@ -58,7 +57,11 @@ export default function DropPage() {
 
       <DropInfoCard
         name={drop.giftcard_name}
-        amount={drop.amount}
+        amount={
+          drop.package_id
+            ? parseInt(drop.package_id.split('<&>')[1])
+            : drop.amount
+        }
         quantity={drop.quantity}
         deadline={drop.deadline}
       />
@@ -70,7 +73,6 @@ export default function DropPage() {
       {deadlinePassed && isAuthenticated && (
         <>
           <WinnerList dropId={drop.id} />
-          <RevealCardButton dropId={drop.id} currentUserFid={user?.fid} />
         </>
       )}
 
