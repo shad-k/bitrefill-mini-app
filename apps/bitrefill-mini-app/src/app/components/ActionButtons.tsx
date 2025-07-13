@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 export default function ActionButtons() {
   return (
@@ -10,7 +10,7 @@ export default function ActionButtons() {
         Create a Drop
       </Link>
       <Link
-        href="/drops"
+        href="/explore"
         className="px-6 py-3 bg-white border border-gray-300 text-gray-800 font-medium rounded-xl hover:bg-gray-100 transition"
       >
         Explore Drops
