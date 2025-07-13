@@ -8,6 +8,7 @@ export async function POST(req: NextRequest) {
     giftcard_id,
     giftcard_name,
     amount,
+    package_id,
     quantity,
     deadline,
     criteria,
@@ -20,7 +21,8 @@ export async function POST(req: NextRequest) {
     .from('drops')
     .insert({
       giftcard_id,
-      amount,
+      amount: package_id ? null : amount,
+      package_id: package_id ?? null,
       quantity,
       deadline,
       criteria,
@@ -37,6 +39,17 @@ export async function POST(req: NextRequest) {
 
   console.log('Calling Bitrefill invoice API...');
   // Call Bitrefill invoice API
+  const product: Record<string, string | number> = {
+    product_id: giftcard_id,
+    quantity,
+  };
+
+  if (package_id) {
+    product.package_id = package_id;
+  } else {
+    product.value = amount;
+  }
+
   const invoiceRes = await fetch(`${process.env.BITREFILL_API_URL}/invoices`, {
     method: 'POST',
     headers: {
@@ -44,13 +57,7 @@ export async function POST(req: NextRequest) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      products: [
-        {
-          product_id: giftcard_id,
-          quantity,
-          value: amount,
-        },
-      ],
+      products: [product],
       payment_method: 'balance',
       webhook_url: `https://${req.headers.get('host')}/api/drop/webhook`,
       auto_pay: true,
@@ -63,9 +70,11 @@ export async function POST(req: NextRequest) {
     );
   });
 
-  const { data: invoice, meta } = await invoiceRes.json();
+  const res = await invoiceRes.json();
+  console.log({ res });
+  const { data: invoice } = res;
 
-  console.log('Updating drop with invoice details...', invoice, meta);
+  console.log('Updating drop with invoice details...', invoice);
   await supabase
     .from('drops')
     .update({

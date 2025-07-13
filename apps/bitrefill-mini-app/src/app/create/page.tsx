@@ -2,11 +2,11 @@
 
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { createDropSchema } from '@/app/create/config/schema';
 import {
-  EligibilityCriteria,
   type CreateDropFormValues,
-} from '@/app/create/config/types';
+  createDropSchema,
+} from '@/app/create/config/schema';
+import { EligibilityCriteria } from '@/app/create/config/types';
 import { GiftCardSelector } from '@/app/create/components/GiftCardSelector';
 import { DropFormFields } from '@/app/create/components/DropFormFields';
 import { SubmitButton } from '@/app/create/components/SubmitButton';
@@ -20,15 +20,14 @@ export default function CreateDropPage() {
     resolver: yupResolver(createDropSchema),
     defaultValues: {
       giftCard: { label: '', value: '' },
-      amount: 1,
       quantity: 1,
+      amount: 1,
       deadline: new Date(),
       criteria: EligibilityCriteria.REACTION,
     },
   });
 
   const onSubmit = async (data: CreateDropFormValues) => {
-    console.log('Create Drop:', data);
     const res = await fetch('/api/drop/create', {
       method: 'POST',
       headers: {
@@ -38,6 +37,7 @@ export default function CreateDropPage() {
         giftcard_id: data.giftCard.value,
         giftcard_name: data.giftCard.label,
         amount: data.amount,
+        package_id: data.package,
         quantity: data.quantity,
         deadline: data.deadline.toISOString(),
         criteria: data.criteria,

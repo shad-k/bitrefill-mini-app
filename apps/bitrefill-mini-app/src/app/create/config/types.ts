@@ -3,10 +3,8 @@ export enum EligibilityCriteria {
   REPLY = 'reply',
 }
 
-export type CreateDropFormValues = {
-  giftCard: { label: string; value: string }
-  amount: number
-  quantity: number
-  deadline: Date
-  criteria: EligibilityCriteria
-}
+export type Package = {
+  id: string;
+  value: string;
+  price: number;
+};

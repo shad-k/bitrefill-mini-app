@@ -6,6 +6,9 @@ import AsyncSelect from 'react-select/async';
 type GiftCardApiItem = {
   id: string;
   name: string;
+  currency: string;
+  packages: string;
+  range: string;
 };
 
 export function GiftCardSelector() {
@@ -24,7 +27,13 @@ export function GiftCardSelector() {
       if (!res.ok) return;
       const { products }: { products: GiftCardApiItem[] } = await res.json();
       setDefaultOptions(
-        products.map((item) => ({ label: item.name, value: item.id }))
+        products.map((item) => ({
+          label: item.name,
+          value: item.id,
+          currency: item.currency,
+          packages: item.packages,
+          range: item.range,
+        }))
       );
     } finally {
       setIsLoading(false);
@@ -61,6 +70,9 @@ export function GiftCardSelector() {
             const options = data.map((item) => ({
               label: item.name,
               value: item.id,
+              currency: item.currency,
+              packages: item.packages,
+              range: item.range,
             }));
             resolve(options);
           } catch {
