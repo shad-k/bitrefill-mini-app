@@ -54,6 +54,8 @@ export default function DropPage() {
     );
   }
 
+  const amountOrText = drop.package_id?.split('<&>')[1];
+
   return (
     <div className="max-w-xl mx-auto p-4 space-y-6">
       <h1 className="text-2xl font-bold">🎁 Drop Details</h1>
@@ -62,7 +64,9 @@ export default function DropPage() {
         name={drop.giftcard_name}
         amount={
           drop.package_id
-            ? parseInt(drop.package_id.split('<&>')[1])
+            ? amountOrText?.match(/\d+/)
+              ? `$${amountOrText}`
+              : amountOrText
             : drop.amount
         }
         quantity={drop.quantity}
