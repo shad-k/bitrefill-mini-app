@@ -34,7 +34,6 @@ const ComposeCastCTA: React.FC<Props> = ({ drop }) => {
         }),
       });
     }
-    setComposingCast(false);
   };
 
   return (
